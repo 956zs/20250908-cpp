@@ -6,14 +6,44 @@
 #include <ctime>
 #include <conio.h>
 #include <cmath>
+#include <string>
 #define mypi 3.14
 using namespace std;
+
+void loadEnv(const string &path)
+{
+    ifstream file(path);
+    if (!file.is_open())
+    {
+        cerr << ".env file not found!" << endl;
+        return;
+    }
+
+    string line;
+    while (getline(file, line))
+    {
+        size_t delimiter_pos = line.find('=');
+        if (delimiter_pos != string::npos)
+        {
+            string key = line.substr(0, delimiter_pos);
+            string value = line.substr(delimiter_pos + 1);
+            // Remove quotes if they exist
+            if (value.front() == '"' && value.back() == '"')
+            {
+                value = value.substr(1, value.length() - 2);
+            }
+            _putenv_s(key.c_str(), value.c_str());
+        }
+    }
+}
+
 void f01();
 void f02();
 void f03();
 
 int main()
 {
+    loadEnv(".env");
     string menuItem[] = {
         "[1]基本輸入與輸出",
         "[2]運算式與運算子1",
@@ -73,7 +103,17 @@ void ClearScreen()
 
 void f01()
 {
-    std::cout << "班級:資訊三乙 座號:21 姓名:張家笛\n";
+    const char *s_class = getenv("MY_CLASS");
+    const char *s_seat = getenv("MY_SEAT");
+    const char *s_name = getenv("MY_NAME");
+    if (s_class && s_seat && s_name)
+    {
+        cout << "班級:" << s_class << " 座號:" << s_seat << " 姓名:" << s_name << "\n";
+    }
+    else
+    {
+        cout << "未在 .env 檔案中設定個人資訊，請檢查 .env 檔案。\n";
+    }
     int aa = 5, bb; // bb 宣告了但未使用，與圖片程式碼一致
     aa *= 5 + 2;    // aa = 5 * (5 + 2) = 35
     std::cout << aa << std::endl;
@@ -115,7 +155,17 @@ void f01()
 
 void f02()
 {
-    cout << "班級:資訊三乙 座號:21 姓名:張家笛\n";
+    const char *s_class = getenv("MY_CLASS");
+    const char *s_seat = getenv("MY_SEAT");
+    const char *s_name = getenv("MY_NAME");
+    if (s_class && s_seat && s_name)
+    {
+        cout << "班級:" << s_class << " 座號:" << s_seat << " 姓名:" << s_name << "\n";
+    }
+    else
+    {
+        cout << "未在 .env 檔案中設定個人資訊。\n";
+    }
     cout << "-----------------1------------------\n";
     cout << "輸出格式練習\n";
 
@@ -144,7 +194,17 @@ void f02()
 
 void f03()
 {
-    cout << "班級:資訊三乙 座號:21 姓名:張家笛\n";
+    const char *s_class = getenv("MY_CLASS");
+    const char *s_seat = getenv("MY_SEAT");
+    const char *s_name = getenv("MY_NAME");
+    if (s_class && s_seat && s_name)
+    {
+        cout << "班級:" << s_class << " 座號:" << s_seat << " 姓名:" << s_name << "\n";
+    }
+    else
+    {
+        cout << "未在 .env 檔案中設定個人資訊。\n";
+    }
     cout << "-----------------1------------------\n";
     cout << "整數=整數/整數 浮點數=浮點數/整數\n";
     printf("\t\t\t%%d\t%%f\n");
