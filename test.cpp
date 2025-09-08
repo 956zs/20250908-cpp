@@ -1,12 +1,12 @@
 #include <iostream>
 #include <cstdlib>
 #include <iomanip>
-#include <windows.h>
 #include <fstream>
 #include <ctime>
-#include <conio.h>
 #include <cmath>
 #include <string>
+#include <unistd.h>
+#include <termios.h>
 #define mypi 3.14
 using namespace std;
 
@@ -32,7 +32,7 @@ void loadEnv(const string &path)
             {
                 value = value.substr(1, value.length() - 2);
             }
-            _putenv_s(key.c_str(), value.c_str());
+            setenv(key.c_str(), value.c_str(), 1);
         }
     }
 }
@@ -58,8 +58,7 @@ int main()
     int selMenu = 99;
     while (selMenu != 0)
     {
-        system("chcp 950");
-        system("cls");
+        system("clear");
         cout << "-----------------------------" << endl;
         int arrLength = sizeof(menuItem) / sizeof(menuItem[0]);
         for (i = 0; i < arrLength; i++)
@@ -82,23 +81,16 @@ int main()
             break;
         }
         cout << "\n";
-        system("pause");
+        cout << "Press any key to continue...";
+        cin.ignore();
+        cin.get();
     }
 }
+
 void ClearScreen()
 {
-#if defined(_WIN32) || defined(_WIN64)
-    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD coord = {0, 0};
-    DWORD count;
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    GetConsoleScreenBufferInfo(hStdOut, &csbi);
-    FillConsoleOutputCharacter(hStdOut, ' ', csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
-    SetConsoleCursorPosition(hStdOut, coord);
-#else
-    // 為非 Windows 系統提供一個備選方案（使用 ANSI escape codes）
+    // 使用 ANSI escape codes 清除螢幕
     std::cout << "\033[2J\033[1;1H";
-#endif
 }
 
 void f01()
