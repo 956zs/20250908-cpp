@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <termios.h>
 #define mypi 3.14
+#define PI 3.14159 // 為 f05 新增的宏
 using namespace std;
 
 void loadEnv(const string &path)
@@ -40,6 +41,8 @@ void loadEnv(const string &path)
 void f01();
 void f02();
 void f03();
+void f04();
+void f05();
 
 int main()
 {
@@ -48,12 +51,13 @@ int main()
         "[1]基本輸入與輸出",
         "[2]運算式與運算子1",
         "[3]運算式與運算子2",
-        "[4]陣列",
-        "[5]搜尋",
-        "[6]排序",
-        "[7]函數與結構",
-        "[8]遞迴",
-        "[9]類別"};
+        "[4]遞增遞減與位元運算",
+        "[5]列舉與常數",
+        "[6]陣列",
+        "[7]搜尋",
+        "[8]排序",
+        "[9]函數與結構",
+        "[10]遞迴"};
     int i, num;
     int selMenu = 99;
     while (selMenu != 0)
@@ -78,6 +82,12 @@ int main()
             break;
         case 3:
             f03();
+            break;
+        case 4:
+            f04();
+            break;
+        case 5:
+            f05();
             break;
         }
         cout << "\n";
@@ -250,4 +260,142 @@ void f03()
     z = x < 0 ? y : x > 0 ? 1
                           : 3; // z becomes 1
     printf("[3]%-10s%6d%6d%6d\n", "z=x<0?y:x>0?1:3", x, y, z);
+}
+
+void f04()
+{
+    const char *s_class = getenv("MY_CLASS");
+    const char *s_seat = getenv("MY_SEAT");
+    const char *s_name = getenv("MY_NAME");
+    if (s_class && s_seat && s_name)
+    {
+        cout << "班級:" << s_class << " 座號:" << s_seat << " 姓名:" << s_name << "\n";
+    }
+    else
+    {
+        cout << "未在 .env 檔案中設定個人資訊。\n";
+    }
+    cout << "-----------------1------------------\n";
+    cout << "遞增/遞減 運算子\n";
+    int k = 3;
+    cout << "k=" << k++ << std::endl; // 後置遞增：先取值 (3) 再遞增
+    cout << "k=" << ++k << std::endl; // 前置遞增：先遞增 (k變5) 再取值
+    cout << "k=" << k << std::endl;
+    cout << "++k=" << ++k << std::endl;
+    std::cout << "k++=" << k++ << std::endl;
+    cout << "++k=" << ++k << std::endl;
+    cout << "k=" << k << std::endl;
+    float m = k++; // m=8, k=9
+    cout << m << endl;
+    cout << k << endl;
+
+    cout << "-----------------2------------------\n";
+    int x, y, z;
+    x = 8, y = 0, z = 2;
+    printf("[0]%-10s%4c%4c%4c\n", " ", 'x', 'y', 'z');
+    printf("[0]%-10s%4d%4d%4d\n", " ", x, y, z);
+    y = x++; // y=8, x=9
+    printf("[1]%-10s%4d%4d%4d\n", "y=x++", x, y, z);
+
+    // **警告**: 以下多個 printf 包含在單一表達式中使用多次自增/自減運算子修改同一變數的行為。
+    // 這是 C/C++ 中的「未定義行為」(Undefined Behavior)，其結果會因編譯器、版本和最佳化設定而異。
+    // 此處程式碼僅為重現圖片中的特定輸出，不應在實際專案中使用。
+
+    x = 8, y = 0, z = 2;
+    printf("[2]%-10s%4d%4d%4d (UB)\n", "x=x++", x++, x, z); // UB
+
+    x = 8, y = 0, z = 2;
+    y = x++ + 2; // y = 8 + 2 = 10, x becomes 9
+    printf("[3]%-10s%4d%4d%4d\n", "y=x+++2", x, y, z);
+
+    x = 8, y = 0, z = 2;
+    y = x++ + x; // UB. 範例輸出顯示 y = 8 + 9 = 17
+    printf("[4]%-10s%4d%4d%4d (UB)\n", "y=x+++x", x, y, z);
+
+    x = 8, y = 0, z = 2;
+    y = x++ + x++; // UB. 範例輸出顯示 y = 8 + 9 = 17
+    printf("[5]%-10s%4d%4d%4d (UB)\n", "y=x+++x++", x, y, z);
+
+    x = 8, y = 0, z = 2;
+    x = x++ + x; // UB. 範例輸出顯示 x = 8 + 9 = 17
+    printf("[6]%-10s%4d%4d%4d (UB)\n", "x=x+++x", x, y, z);
+
+    x = 8, y = 0, z = 2;
+    y = (x++) + x; // UB. 與 [4] 相同
+    printf("[7]%-10s%4d%4d%4d (UB)\n", "y=(x++)+x", x, y, z);
+
+    x = 8, y = 0, z = 2;
+    y = (++x) + x; // UB. 範例輸出顯示 x 先變 9, y = 9 + 9 = 18
+    printf("[8]%-10s%4d%4d%4d (UB)\n", "y=(++x)+x", x, y, z);
+
+    x = 8, y = 0, z = 2;
+    y = x++ + x++; // UB. 與 [5] 相同
+    printf("[9]%-10s%4d%4d%4d (UB)\n", "y=x+++x++", x, y, z);
+
+    x = 8, y = 0, z = 2;
+    y = x-- + x; // UB. 範例輸出顯示 y = 8 + 7 = 15
+    printf("[A]%-10s%4d%4d%4d (UB)\n", "y=x--+x", x, y, z);
+
+    cout << "-----------------3------------------\n";
+    int a, b;
+    x = 3, y = 2, z = 1;
+    a = (x *= (++y)) % (++z); // y=3, z=2. x=3*3=9. a=9%2=1
+    printf("a=(x*=(++y))%%(++z)=%d,x=%d,y=%d,z=%d\n", a, x, y, z);
+
+    x = 3, y = 2, z = 1;
+    b = (x *= (++y)) * (++z); // y=3, z=2. x=3*3=9. b=9*2=18
+    printf("b=(x*=(++y))*(++z)=%d,x=%d,y=%d,z=%d\n", b, x, y, z);
+
+    x = 3, y = 2, z = 1;
+    b = (x *= (++y)) % (++z); // y=3, z=2. x=3*3=9. b=9%2=1
+    printf("b=(x*=(++y))%%(++z)=%d,x=%d,y=%d,z=%d\n", b, x, y, z);
+}
+
+void f05()
+{
+    const char *s_class = getenv("MY_CLASS");
+    const char *s_seat = getenv("MY_SEAT");
+    const char *s_name = getenv("MY_NAME");
+    if (s_class && s_seat && s_name)
+    {
+        cout << "班級:" << s_class << " 座號:" << s_seat << " 姓名:" << s_name << "\n";
+    }
+    else
+    {
+        cout << "未在 .env 檔案中設定個人資訊。\n";
+    }
+    // enum: 一組具名的整數常數
+    // x=0, y=1, z=10 (未指定則從前一個+1，第一個預設為0)
+    enum dir
+    {
+        x,
+        y,
+        z = 10
+    };
+    const int DAY = 24;
+    double area = 3 * 3 * PI;
+    enum dir b = x;
+    printf("一天有%d小時\n", DAY);
+    printf("圓面積為:%.5f\n", area); // %.5f: 格式化為5位小數的浮點數
+    printf("b = %d\ty = %d\tz=%d\n", b, y, z);
+
+    // Run=1, Stop=2(自動), Pause=3, Exit=4(自動)
+    enum States
+    {
+        Run = 1,
+        Stop,
+        Pause = 3,
+        Exit
+    };
+    States StateMachine = Pause;
+    int Command = 0;
+    cout << "請輸入：";
+    cin >> Command;
+    if (Command == 1)
+        StateMachine = Stop;
+    if (Command == 2 && StateMachine == Pause)
+        StateMachine = Run;
+    if (Command == 3 || StateMachine == Stop)
+        StateMachine = Exit;
+    cout << StateMachine << endl;
 }
