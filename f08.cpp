@@ -83,8 +83,11 @@ int main()
 
 void show_title()
 {
+    const char *s_class = getenv("MY_CLASS");
+    const char *s_seat = getenv("MY_SEAT");
+    const char *s_name = getenv("MY_NAME");
     cout << "-----------------------------" << endl;
-    cout << "---   班級 32 魯夫    ---\n";
+    cout << "---   班級 " << s_class << " 座號 " << s_seat << " 姓名 " << s_name << "    ---\n";
     cout << "-----------------------------" << endl;
 }
 
