@@ -1,13 +1,70 @@
-#include <cmath>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
+#include <bits/stdc++.h>
 #define mypi 3.14
 #define maxv 999
 using namespace std;
+
+float Area(float bottom, float height) { return bottom * height / 2; }
+
+double Area(double r) { return 3.14 * r * r; }
+
+void swap(int a, int b) {
+    int tmp = a;
+    a = b;
+    b = tmp;
+}
+
+void swap(int *a, int *b) {
+    int tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+void swapr(int &a, int &b) {
+    int tmp = a;
+    a = b;
+    b = tmp;
+}
+
+void bvar(float a, float *b, double &c) {
+    a++;
+    (*b)++;
+    c++;
+}
+
+void rnd(int[], int val);
+void rnd(int *x, int n) {
+    srand(time(NULL));
+    for (int i = 0; i < n; i++) {
+        x[i] = rand() % 9 + 5;
+    }
+}
+
+int *rnd() {
+    int *r = new int[5];
+    srand((unsigned)time(NULL));
+    printf("*rnd函數內 : \n r位址%p\n", r);
+    for (int i = 0; i < 5; ++i) {
+        r[i] = rand() % 20 + 6;
+        printf("%d ", r[i]);
+    }
+    return r;
+}
+
+void foo() {
+    static int cnt = 0;
+    printf("%2d", ++cnt);
+}
+
+int fibn(int n) {
+    printf("fib[%d] ", n);
+    if (n == 0 || n == 1) {
+        if (n == 0)
+            cout << endl;
+        return 1;
+    } else {
+        return fibn(n - 1) + fibn(n - 2);
+    }
+}
 
 void show_title();
 void f01();
@@ -21,6 +78,8 @@ void f08();
 void f09();
 void f10();
 void f11();
+void f12();
+void f13();
 int main() {
     string menuItem[] = {"[1]基本輸入與輸出1",
                          "[2]基本輸入與輸出2",
@@ -77,6 +136,12 @@ int main() {
             break;
         case 11:
             f11();
+            break;
+        case 12:
+            f12();
+            break;
+        case 13:
+            f13();
             break;
         }
         cout << "\n";
@@ -557,4 +622,104 @@ void f11() {
     printf("[6]n=%d,g=%d,k=%d\n", n, g, *k);
     (*k)++;
     printf("[7]n=%d,g=%d,k=%d\n", n, g, *k);
+}
+
+void f12() {
+    float a, b;
+    typedef double gg;
+    gg c, area;
+
+    cout << "input a b c:";
+    scanf("%f%f%lf", &a, &b, &c);
+
+    area = Area(a, b);
+    cout << "三角形面積 = " << area << endl;
+
+    area = Area(c);
+    cout << "圓形面積" << area << endl;
+
+    cout << "-------------------------------\n";
+
+    int x, y, sum;
+    x = (int)a;
+    y = (int)b;
+
+    cout << "[1]傳值 call by value" << endl;
+    cout << "  執行前 (x,y)=" << x << "," << y << endl;
+    swap(x, y);
+    cout << "  執行後 (x,y)=" << x << "," << y << endl;
+
+    cout << "[2]傳址 call by pointer" << endl;
+    cout << "  執行前 (x,y)=" << x << "," << y << endl;
+    swap(&x, &y);
+    cout << "  執行後 (x,y)=" << x << "," << y << endl;
+
+    cout << "[3]傳參考 call by reference" << endl;
+    cout << "  執行前 (x,y)=" << x << "," << y << endl;
+    swapr(x, y);
+    cout << "  執行後 (x,y)=" << x << "," << y << endl;
+
+    cout << "[4]傳值 傳址 傳參考\n";
+    printf("  執行前 a=%.1f b=%.1f c=%.1f\n", a, b, c);
+    bvar(a, &b, c);
+    printf("  執行後 a=%.1f b=%.1f c=%.1f\n", a, b, c);
+
+    int &g = x;
+    g++;
+
+    printf("[5]&g=%p,&x=%p,g=%d,x=%d", &g, &x, g, x);
+}
+
+void f13() {
+    int a[6] = {9, 1, 3};
+    cout << "-------------------------------\n";
+
+    cout << "-------------------------------\n";
+    cout << "[1]輸出初始值\n";
+    int n;
+    for (int i = 0; i < 6; i++)
+        printf("%3d", a[i]);
+    cout << endl;
+
+    n = sizeof(a) / sizeof(int);
+    rnd(a, n);
+    cout << "[2]輸出亂數值\n";
+    for (int i = 0; i < n; i++)
+        printf("%3d", a[i]);
+    cout << endl;
+
+    cout << "[3]函數回傳陣列\n";
+    int *ptr;
+    ptr = rnd();
+    printf("\n 主程式:\n ptr位址%p\n", ptr);
+    for (int i = 0; i < 5; i++)
+        printf("r[%d]=%2d=%2d\n", i, *(ptr + i), ptr[i]);
+    cout << "-------------------------------\n";
+
+    cout << "[4]靜態宣告" << endl;
+    for (int x = 0; x < 5; x++)
+        foo();
+    cout << "\n-------------------------------\n";
+
+    cout << "費氏數列fib(n)=fib(n-1)+fib(n-2),n>=2" << endl;
+    int fib[100], fn;
+    fib[0] = 1;
+    fib[1] = 1;
+    cout << "請輸入n : ";
+    cin >> n;
+
+    cout << "[5]直接解" << endl;
+    for (int i = 2; i <= n; i++) {
+        fib[i] = fib[i - 1] + fib[i - 2];
+    }
+
+    for (int i = 0; i <= n; i++) {
+        cout << setw(4) << fib[i];
+    }
+    cout << endl;
+
+    cout << "[6]遞迴解" << endl;
+    fn = fibn(n);
+    cout << endl;
+    cout << "fib[" << n << "]=" << fn << endl;
 }
